@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Label 기초 실습</title>
+</head>
+<body>
+<h2>회원가입 폼</h2>
+<!-- for 속성을 사용한 연결 -->
+<label for="username">사용자명:</label>
+<input type="text" id="username" name="username">
+<br><br>
+
+<label for="email">이메일:</label>
+<input type="email" id="email" name="email">
+<br><br>
+
+<!-- 감싸기 방법 -->
+<label>
+    비밀번호:
+    <input type="password" name="password">
+</label>
+<br><br>
+
+<!-- 체크박스와 라디오 버튼에서의 활용 -->
+<label for="agree">
+    <input type="checkbox" id="agree" name="agree">
+    이용약관에 동의합니다
+</label>
+<br><br>
+
+<fieldset>
+    <legend>성별</legend>
+    <label for="male">
+        <input type="radio" id="male" name="gender" value="male">
+        남성
+    </label>
+    <label for="female">
+        <input type="radio" id="female" name="gender" value="female">
+        여성
+    </label>
+</fieldset>
+</body>
+</html>

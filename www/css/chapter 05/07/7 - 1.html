@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상 클래스 실습</title>
+    <style>
+     .magic-button {
+     background-color: #3498db;
+     color: white;
+     padding: 10px 20px;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     font-size: 16px;
+     transition: all 0.3s ease;
+     }
+
+     /* 마우스를 올렸을 때 */
+     .magic-button:hover {
+     background-color: #2980b9;
+     transform: translateY(-2px);
+     }
+
+     /* 클릭하고 있을 때 */
+     .magic-button:active {
+     background-color: #1f618d;
+     transform: translateY(0);
+     }
+
+     /* 포커스를 받았을 때 */
+     .magic-button:focus {
+     outline: 3px solid #f39c12;
+     outline-offset: 2px;
+     }
+    </style>
+</head>
+<body>
+<button class="magic-button">마법의 버튼</button>
+<p>버튼에 마우스를 올려보고, 클릭해보고, 탭 키로 포커스를 맞춰보세요!</p>
+</body>
+</html>
