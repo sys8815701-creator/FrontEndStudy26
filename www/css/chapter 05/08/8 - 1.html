@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상 요소</title>
+    <style>
+     .greeting {
+     font-size: 20px;
+     color: #333;
+     padding: 10px;
+     }
+
+     .greeting::before {
+     content: " ";
+     color: #ff6b6b;
+     }
+
+     .greeting::after {
+     content: " ";
+     color: #4ecdc4;
+     }
+
+     .button {
+     display: inline-block;
+     padding: 12px 20px;
+     background-color: #3498db;
+     color: white;
+     text-decoration: none;
+     border-radius: 5px;
+     position: relative;
+     }
+
+     .button::before {
+     content: "";
+     display: inline-block;
+     width: 0;
+     height: 0;
+     border-left: 8px solid transparent;
+     border-right: 8px solid transparent;
+     border-bottom: 8px solid white;
+     margin-right: 8px;
+     vertical-align: middle;
+     }
+
+    .button::after {
+     content: "→";
+     margin-left: 8px;
+     font-weight: bold;
+     }
+    </style>
+</head>
+<body>
+<p class="greeting">안녕하세요!</p>
+<a href="#" class="button">다운로드</a>
+</body>
+</html>

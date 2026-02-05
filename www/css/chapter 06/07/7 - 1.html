@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Float 기초</title>
+    <style>
+     .container {
+     width: 600px;
+     margin: 20px auto;
+     padding: 20px;
+     border: 1px solid #ddd;
+     }
+
+     .floating-image {
+     width: 200px;
+     height: 150px;
+     background-color: #3498db;
+     float: left;
+     margin: 0 20px 20px 0;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: white;
+     font-weight: bold;
+     }
+
+     .text-content {
+     text-align: justify;
+     line-height: 1.6;
+     }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="floating-image">이미지</div>
+    <div class="text-content">
+        <p>이것은 float을 사용한 텍스트 감싸기 예제입니다. <br> 파란색 박스가 왼쪽으로 float되어 있고, 텍스트가 그 주변으로 흘러가고 있습니다. <br> 이것이 float의 원래 목적이었습니다.</p>
+        <p>텍스트가 이미지 주변으로 자연스럽게 흘러가는 것을 확인할 수 있습니다. 마치 신문이나 잡지의 레이아웃처럼 말이죠.</p>
+    </div>
+</div>
+</body>
+</html>
