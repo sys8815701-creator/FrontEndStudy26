@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로그레스 바 실습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>동적 파일 업로드</h2>
+    <div class="progress mb-3">
+        <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+             style="width: 0%">0%</div>
+    </div>
+    <button id="startUpload" class="btn btn-primary">업로드 시작</button>
+    <button id="resetUpload" class="btn btn-secondary">초기화</button>
+</div>
+
+<script>
+document.getElementById('startUpload').addEventListener('click', function() {
+    const progressBar = document.getElementById('uploadProgress');
+    let progress = 0;
+
+    // 버튼 비활성화
+    this.disabled = true;
+
+    const interval = setInterval(() => {
+        progress += Math.random() * 15; // 랜덤하게 진행
+        if (progress > 100) progress = 100;
+
+        progressBar.style.width = progress + '%';
+        progressBar.textContent = Math.round(progress) + '%';
+
+        if (progress >= 100) {
+            clearInterval(interval);
+            progressBar.classList.remove('progress-bar-animated');
+            progressBar.classList.add('bg-success');
+            progressBar.textContent = '업로드 완료!';
+            document.getElementById('startUpload').disabled = false;
+        }
+    }, 200);
+});
+
+document.getElementById('resetUpload').addEventListener('click', function() {
+    const progressBar = document.getElementById('uploadProgress');
+    progressBar.style.width = '0%';
+    progressBar.textContent = '0%';
+    progressBar.classList.add('progress-bar-animated');
+    progressBar.classList.remove('bg-success');
+    document.getElementById('startUpload').disabled = false;
+});
+</script>
+</body>
+</html>

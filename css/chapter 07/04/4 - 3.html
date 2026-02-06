@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+    .navbar {
+        display: flex;
+        align-items: center; /* 로고와 메뉴 세로 중앙 정렬 */
+        justify-content: space-between;
+        padding: 15px 30px;
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-menu a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .nav-menu a:hover {
+        color: #3498db;
+    }
+
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #3498db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <div class="logo">MyWebSite</div>
+    <ul class="nav-menu">
+        <li><a href="#">홈</a></li>
+        <li><a href="#">소개</a></li>
+        <li><a href="#">서비스</a></li>
+        <li><a href="#">연락처</a></li>
+        <li>
+            <div class="profile-icon">👤</div>
+        </li>
+    </ul>
+</nav>
+</body>
+</html>

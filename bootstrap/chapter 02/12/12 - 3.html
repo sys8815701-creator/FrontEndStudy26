@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인풋 그룹 실습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h3>실무형 인풋 그룹</h3>
+
+    <!-- 전화번호 입력 -->
+    <div class="input-group mb-3">
+        <span class="input-group-text">📞</span>
+        <select class="form-select" style="max-width: 100px;">
+            <option>010</option>
+            <option>011</option>
+            <option>016</option>
+        </select>
+        <span class="input-group-text">-</span>
+        <input type="text" class="form-control" placeholder="1234" maxlength="4">
+        <span class="input-group-text">-</span>
+        <input type="text" class="form-control" placeholder="5678" maxlength="4">
+    </div>
+
+    <!-- 쿠폰 코드 입력 -->
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="쿠폰 코드 입력" id="couponCode">
+        <button class="btn btn-success" type="button" onclick="applyCoupon()">적용</button>
+        <button class="btn btn-outline-secondary" type="button" onclick="clearCoupon()">초기화</button>
+    </div>
+
+    <!-- 크기별 입력 -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group input-group-sm mb-3">
+                <span class="input-group-text">Small</span>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group input-group-lg mb-3">
+                <span class="input-group-text">Large</span>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function applyCoupon() {
+    const code = document.getElementById('couponCode').value;
+    if (code.trim()) {
+        alert(`쿠폰 코드 "${code}"가 적용되었습니다!`);
+    } else {
+        alert('쿠폰 코드를 입력해주세요.');
+    }
+}
+
+function clearCoupon() {
+    document.getElementById('couponCode').value = '';
+}
+</script>
+</body>
+</html>

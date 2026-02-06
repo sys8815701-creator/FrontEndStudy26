@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스티키 헤더 실습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<style>
+/* 커스텀 스티키 스타일 */
+.custom-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .mobile-sticky {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+    }
+}
+</style>
+
+<!-- 반응형 스티키 헤더 -->
+<nav class="navbar navbar-expand-lg custom-sticky">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">Logo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">홈</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">소개</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">연락처</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 모바일 전용 하단 고정 버튼 -->
+<div class="d-md-none mobile-sticky">
+    <div class="btn-group w-100" role="group">
+        <button class="btn btn-outline-primary">홈</button>
+        <button class="btn btn-outline-primary">검색</button>
+        <button class="btn btn-primary">주문</button>
+        <button class="btn btn-outline-primary">내정보</button>
+    </div>
+</div>
+</body>
+</html>

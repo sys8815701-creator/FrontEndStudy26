@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>온라인 예약 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .calendar-day:hover:not(.disabled) {
+            background-color: #e7f1ff;
+        }
+        .calendar-day.selected {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .calendar-day.disabled {
+            background-color: #f8f9fa;
+            color: #adb5bd;
+            cursor: not-allowed;
+        }
+        .time-slot {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-slot:hover:not(.disabled) {
+            background-color: #e7f1ff;
+        }
+        .time-slot.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .time-slot.selected {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">날짜 선택</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button class="btn btn-outline-primary" id="prevMonth">이전</button>
+                            <h5 id="currentMonth" class="mb-0"></h5>
+                            <button class="btn btn-outline-primary" id="nextMonth">다음</button>
+                        </div>
+                        <div class="row g-2 text-center mb-2">
+                            <div class="col">일</div>
+                            <div class="col">월</div>
+                            <div class="col">화</div>
+                            <div class="col">수</div>
+                            <div class="col">목</div>
+                            <div class="col">금</div>
+                            <div class="col">토</div>
+                        </div>
+                        <div id="calendarDays" class="row g-2"></div>
+                    </div>
+                </div>
+
+                <div class="card" id="timeSlotSection" style="display: none;">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">시간 선택</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="timeSlots" class="row g-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">예약 정보</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="reservationForm">
+                            <div class="mb-3">
+                                <label class="form-label">선택한 날짜</label>
+                                <input type="text" class="form-control" id="selectedDate" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">선택한 시간</label>
+                                <input type="text" class="form-control" id="selectedTime" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">서비스 선택</label>
+                                <select class="form-select" required>
+                                    <option value="">선택하세요</option>
+                                    <option value="cut">커트 (30분)</option>
+                                    <option value="perm">펌 (120분)</option>
+                                    <option value="color">염색 (90분)</option>
+                                    <option value="treatment">트리트먼트 (60분)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">이름</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">연락처</label>
+                                <input type="tel" class="form-control" placeholder="010-0000-0000" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100" disabled id="submitBtn">
+                                예약하기
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    let currentDate = new Date();
+    let selectedDate = null;
+    let selectedTime = null;
+
+    // 예약 불가능한 날짜 (예시)
+    const disabledDates = ['2024-12-25', '2024-01-01'];
+
+    // 예약 데이터 (실제로는 서버에서 받아옴)
+    const bookedSlots = {
+        '2024-12-20': ['09:00', '10:00', '14:00'],
+        '2024-12-21': ['11:00', '15:00']
+    };
+
+    // 캘린더 렌더링
+    function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        $('#currentMonth').text(`${year}년 ${month + 1}월`);
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+
+        let html = '';
+        let dayCount = 1;
+
+        // 달력 생성
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDay) {
+                    html += '<div class="col"></div>';
+                } else if (dayCount > lastDate) {
+                    html += '<div class="col"></div>';
+                } else {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayCount).padStart(2, '0')}`;
+                    const isPast = new Date(dateStr) < new Date().setHours(0, 0, 0, 0);
+                    const isDisabled = disabledDates.includes(dateStr) || isPast;
+
+                    html += `
+                        <div class="col">
+                            <div class="calendar-day ${isDisabled ? 'disabled' : ''}
+                                 d-flex align-items-center justify-content-center"
+                                 data-date="${dateStr}">
+                                ${dayCount}
+                            </div>
+                        </div>
+                    `;
+                    dayCount++;
+                }
+            }
+            if (dayCount > lastDate) break;
+        }
+
+        $('#calendarDays').html(html);
+    }
+
+    // 시간대 렌더링
+    function renderTimeSlots(date) {
+        const slots = [];
+        for (let hour = 9; hour < 18; hour++) {
+            for (let minute = 0; minute < 60; minute += 30) {
+                const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                slots.push(timeStr);
+            }
+        }
+
+        const booked = bookedSlots[date] || [];
+
+        let html = '';
+        slots.forEach(slot => {
+            const isBooked = booked.includes(slot);
+            html += `
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="time-slot ${isBooked ? 'disabled' : ''}
+                         border rounded p-2 text-center"
+                         data-time="${slot}">
+                        ${slot}
+                    </div>
+                </div>
+            `;
+        });
+
+        $('#timeSlots').html(html);
+        $('#timeSlotSection').slideDown();
+    }
+
+    // 이벤트 핸들러
+    $(document).on('click', '.calendar-day:not(.disabled)', function() {
+        $('.calendar-day').removeClass('selected');
+        $(this).addClass('selected');
+
+        selectedDate = $(this).data('date');
+        selectedTime = null;
+
+        $('#selectedDate').val(selectedDate);
+        $('#selectedTime').val('');
+        $('#submitBtn').prop('disabled', true);
+
+        renderTimeSlots(selectedDate);
+    });
+
+    $(document).on('click', '.time-slot:not(.disabled)', function() {
+        $('.time-slot').removeClass('selected');
+        $(this).addClass('selected');
+
+        selectedTime = $(this).data('time');
+        $('#selectedTime').val(selectedTime);
+        $('#submitBtn').prop('disabled', false);
+    });
+
+    $('#prevMonth').click(function() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+        $('#timeSlotSection').hide();
+    });
+
+    $('#nextMonth').click(function() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+        $('#timeSlotSection').hide();
+    });
+
+    $('#reservationForm').submit(function(e) {
+        e.preventDefault();
+        alert('예약이 완료되었습니다!\n날짜: ' + selectedDate + '\n시간: ' + selectedTime);
+    });
+
+    // 초기 렌더링
+    renderCalendar();
+});
+
+// 예약 현황 표시 추가
+function renderTimeSlots(date) {
+    const slots = [];
+    for (let hour = 9; hour < 18; hour++) {
+        for (let minute = 0; minute < 60; minute += 30) {
+            const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+            slots.push(timeStr);
+        }
+    }
+
+    const booked = bookedSlots[date] || [];
+    const availableCount = slots.length - booked.length;
+
+    // 예약 현황 표시
+    const statusHtml = `
+        <div class="alert alert-info mb-3">
+            <strong>예약 현황:</strong>
+            전체 ${slots.length}개 중 ${availableCount}개 시간대 예약 가능
+        </div>
+    `;
+
+    let html = statusHtml;
+    slots.forEach(slot => {
+        const isBooked = booked.includes(slot);
+        html += `
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="time-slot ${isBooked ? 'disabled' : ''}
+                     border rounded p-2 text-center position-relative"
+                     data-time="${slot}">
+                    ${slot}
+                    ${isBooked ? '<small class="d-block text-muted">예약완료</small>' : ''}
+                </div>
+            </div>
+        `;
+    });
+
+    $('#timeSlots').html(html);
+    $('#timeSlotSection').slideDown();
+}
+</script>
+</body>
+</html>

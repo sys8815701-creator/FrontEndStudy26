@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토스트 알림 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>토스트 알림 시스템</h2>
+
+        <!-- 토스트 컨테이너 -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="basicToast" class="toast" role="alert">
+                <div class="toast-header">
+                    <strong class="me-auto">알림</strong>
+                    <small>방금</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    안녕하세요! 첫 번째 토스트 메시지입니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- 토스트 실행 버튼 -->
+        <button type="button" class="btn btn-primary" id="showToast">
+            토스트 보기
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 토스트 초기화 및 이벤트 설정
+        const toastElement = document.getElementById('basicToast');
+        const toast = new bootstrap.Toast(toastElement);
+
+        document.getElementById('showToast').addEventListener('click', function() {
+            toast.show();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반응형 미디어 실습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>고객 리뷰</h2>
+
+    <!-- 기본 미디어 객체 -->
+    <div class="d-flex mb-3">
+        <img src="https://via.placeholder.com/64x64" class="flex-shrink-0 me-3 rounded-circle" alt="프로필">
+        <div class="flex-grow-1">
+            <h5 class="mt-0">김고객</h5>
+            <p>정말 좋은 서비스였어요! 직원분들도 친절하시고 시설도 깨끗합니다.
+            다음에도 꼭 이용하고 싶어요.</p>
+            <small class="text-muted">2024년 3월 15일</small>
+        </div>
+    </div>
+
+    <!-- 중첩된 미디어 객체 (답글) -->
+    <div class="d-flex mb-3">
+        <img src="https://via.placeholder.com/64x64" class="flex-shrink-0 me-3 rounded-circle" alt="프로필">
+        <div class="flex-grow-1">
+            <h5 class="mt-0">박관리자</h5>
+            <p>소중한 후기 감사합니다! 앞으로도 더 나은 서비스로 보답하겠습니다.</p>
+
+            <!-- 답글의 답글 -->
+            <div class="d-flex mt-3">
+                <img src="https://via.placeholder.com/48x48" class="flex-shrink-0 me-3 rounded-circle" alt="프로필">
+                <div class="flex-grow-1">
+                    <h6 class="mt-0">김고객</h6>
+                    <p>네, 감사합니다!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

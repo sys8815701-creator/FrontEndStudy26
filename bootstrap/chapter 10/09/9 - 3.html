@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무한 스크롤 예제</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>피드</h2>
+
+        <!-- 피드 목록 영역 -->
+        <div id="feedList">
+            <!-- 동적으로 생성됨 -->
+        </div>
+
+        <!-- 로딩 표시 -->
+        <div id="loading" class="text-center my-4 d-none">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">로딩 중...</span>
+            </div>
+            <p class="mt-2">더 많은 콘텐츠를 불러오는 중...</p>
+        </div>
+
+        <!-- 마지막 도달 메시지 -->
+        <div id="endMessage" class="text-center my-4 d-none">
+            <p class="text-muted">모든 콘텐츠를 확인했습니다.</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="infinite-scroll.js"></script>
+</body>
+</html>

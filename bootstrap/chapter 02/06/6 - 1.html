@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캐러셀 실습</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>제품 갤러리</h2>
+
+        <!-- 캐러셀 시작 -->
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <!-- 인디케이터 -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <!-- 슬라이드 내용 -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://via.placeholder.com/800x400/007bff/ffffff?text=Product+1" class="d-block w-100" alt="제품 1">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>스마트폰</h5>
+                        <p>최신 기술이 적용된 스마트폰입니다.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400/28a745/ffffff?text=Product+2" class="d-block w-100" alt="제품 2">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>노트북</h5>
+                        <p>고성능 프로세서가 탑재된 노트북입니다.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://via.placeholder.com/800x400/dc3545/ffffff?text=Product+3" class="d-block w-100" alt="제품 3">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>태블릿</h5>
+                        <p>휴대성과 성능을 모두 갖춘 태블릿입니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 이전/다음 버튼 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">이전</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">다음</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

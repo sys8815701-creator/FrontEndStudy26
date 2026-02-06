@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드롭다운과 툴팁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>사용자 메뉴</h2>
+
+        <!-- 기본 드롭다운 -->
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                내 계정
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">내 정보</a></li>
+                <li><a class="dropdown-item" href="#">설정</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">로그아웃</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

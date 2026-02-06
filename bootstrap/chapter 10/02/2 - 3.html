@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 대시보드</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: #212529;
+        }
+        .stat-card {
+            border-left: 4px solid #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 사이드바 -->
+            <nav class="col-md-2 d-none d-md-block sidebar">
+                <div class="position-sticky pt-3">
+                    <h5 class="text-white px-3">관리자 메뉴</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white active" href="#">대시보드</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">회원 관리</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">상품 관리</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="col-md-10 ms-sm-auto px-4">
+                <h2 class="mt-4 mb-4">대시보드</h2>
+
+                <!-- 통계 카드 영역 -->
+                <div id="stats-section"></div>
+
+                <!-- 데이터 테이블 영역 -->
+                <div id="table-section" class="mt-4"></div>
+            </main>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    // 통계 데이터
+    const stats = [
+        { title: '총 회원수', value: '1,234', color: 'primary', icon: '👥' },
+        { title: '오늘 방문자', value: '567', color: 'success', icon: '📊' },
+        { title: '이번 달 매출', value: '₩5,000,000', color: 'warning', icon: '💰' },
+        { title: '대기 주문', value: '23', color: 'danger', icon: '📦' }
+    ];
+
+    // 카드 생성
+    let statsHtml = '<div class="row">';
+    stats.forEach(function(stat) {
+        statsHtml += `
+            <div class="col-12 col-sm-6 col-lg-3 mb-3">
+                <div class="card stat-card border-${stat.color}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="text-muted mb-1">${stat.title}</p>
+                                <h3 class="mb-0">${stat.value}</h3>
+                            </div>
+                            <div class="fs-1">${stat.icon}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    statsHtml += '</div>';
+
+    $('#stats-section').html(statsHtml);
+});
+
+    // 위 스크립트에 추가
+const recentMembers = [
+    { id: 1, name: '김철수', email: 'kim@example.com', date: '2024-01-15' },
+    { id: 2, name: '이영희', email: 'lee@example.com', date: '2024-01-14' },
+    { id: 3, name: '박민수', email: 'park@example.com', date: '2024-01-13' }
+];
+
+let tableHtml = `
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">최근 가입 회원</h5>
+            <input type="text" id="searchInput" class="form-control w-25" placeholder="검색...">
+        </div>
+        <div class="card-body">
+            <table class="table table-hover" id="memberTable">
+                <thead class="table-light">
+                    <tr>
+                        <th>번호</th>
+                        <th>이름</th>
+                        <th>이메일</th>
+                        <th>가입일</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+`;
+
+recentMembers.forEach(function(member) {
+    tableHtml += `
+        <tr>
+            <td>${member.id}</td>
+            <td>${member.name}</td>
+            <td>${member.email}</td>
+            <td>${member.date}</td>
+            <td>
+                <button class="btn btn-sm btn-primary">상세</button>
+                <button class="btn btn-sm btn-danger">삭제</button>
+            </td>
+        </tr>
+    `;
+});
+
+tableHtml += `
+                </tbody>
+            </table>
+        </div>
+    </div>
+`;
+
+$('#table-section').html(tableHtml);
+
+// 검색 기능 구현
+$('#searchInput').on('keyup', function() {
+    const value = $(this).val().toLowerCase();
+    $('#memberTable tbody tr').filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑몰 - 상품 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .product-card {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .badge-cart {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">쇼핑몰</a>
+            <button class="btn btn-outline-light position-relative" id="cartBtn">
+                장바구니
+                <span class="badge bg-danger badge-cart" id="cartCount">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 상품 목록 -->
+    <div class="container mt-4">
+        <h2 class="mb-4">인기 상품</h2>
+        <div class="row" id="productList">
+            <!-- 상품 카드가 여기에 동적으로 추가됩니다 -->
+        </div>
+    </div>
+
+    <!-- 장바구니 모달 -->
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">장바구니</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cartItems"></div>
+                    <div class="text-end mt-3">
+                        <h4>총 금액: <span id="totalPrice">0</span>원</h4>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">계속 쇼핑</button>
+                    <button type="button" class="btn btn-primary" id="checkoutBtn">주문하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+$(document).ready(function() {
+    // 상품 데이터 (실제로는 서버에서 받아옵니다)
+    const products = [
+        { id: 1, name: '무선 이어폰', price: 89000, image: 'https://via.placeholder.com/300x200?text=이어폰', desc: '고음질 블루투스 이어폰' },
+        { id: 2, name: '스마트워치', price: 259000, image: 'https://via.placeholder.com/300x200?text=워치', desc: '건강 관리 기능 탑재' },
+        { id: 3, name: '노트북 거치대', price: 35000, image: 'https://via.placeholder.com/300x200?text=거치대', desc: '각도 조절 가능' },
+        { id: 4, name: '무선 마우스', price: 45000, image: 'https://via.placeholder.com/300x200?text=마우스', desc: '인체공학적 디자인' },
+        { id: 5, name: 'USB 허브', price: 28000, image: 'https://via.placeholder.com/300x200?text=허브', desc: '7포트 고속 충전' },
+        { id: 6, name: '키보드', price: 129000, image: 'https://via.placeholder.com/300x200?text=키보드', desc: '기계식 청축' }
+    ];
+
+    // 장바구니 데이터 (localStorage에서 불러오기)
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // 상품 목록 렌더링
+    function renderProducts() {
+        let html = '';
+        products.forEach(product => {
+            html += `
+                <div class="col-md-4 mb-4">
+                    <div class="card product-card">
+                        <img src="${product.image}" class="card-img-top" alt="${product.name}">
+                        <div class="card-body">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text text-muted">${product.desc}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 mb-0">${product.price.toLocaleString()}원</span>
+                                <button class="btn btn-primary btn-sm add-to-cart" data-id="${product.id}">
+                                    담기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        $('#productList').html(html);
+    }
+
+    // 장바구니에 상품 추가
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        const existingItem = cart.find(item => item.id === productId);
+
+        if (existingItem) {
+            existingItem.quantity++;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+
+        // 추가 완료 알림
+        showToast('장바구니에 추가되었습니다!');
+    }
+
+    // 장바구니 개수 업데이트
+    function updateCartCount() {
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        $('#cartCount').text(totalCount);
+    }
+
+    // 장바구니 내용 렌더링
+    function renderCart() {
+        if (cart.length === 0) {
+            $('#cartItems').html('<p class="text-center text-muted">장바구니가 비어있습니다.</p>');
+            $('#totalPrice').text('0');
+            return;
+        }
+
+        let html = '<div class="list-group">';
+        let total = 0;
+
+        cart.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+
+            html += `
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${item.name}</h6>
+                            <small class="text-muted">${item.price.toLocaleString()}원</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-sm btn-outline-secondary decrease-qty" data-id="${item.id}">-</button>
+                            <span class="mx-3">${item.quantity}</span>
+                            <button class="btn btn-sm btn-outline-secondary increase-qty" data-id="${item.id}">+</button>
+                            <button class="btn btn-sm btn-danger ms-3 remove-item" data-id="${item.id}">삭제</button>
+                        </div>
+                    </div>
+                    <div class="text-end mt-2">
+                        <strong>${itemTotal.toLocaleString()}원</strong>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        $('#cartItems').html(html);
+        $('#totalPrice').text(total.toLocaleString());
+    }
+
+    // 수량 변경
+    function updateQuantity(productId, change) {
+        const item = cart.find(i => i.id === productId);
+        if (item) {
+            item.quantity += change;
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+    }
+
+    // 토스트 알림 표시
+    function showToast(message) {
+        const toast = $(`
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                <div class="toast show" role="alert">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            </div>
+        `);
+        $('body').append(toast);
+        setTimeout(() => toast.remove(), 2000);
+    }
+
+    // 이벤트 리스너
+    $(document).on('click', '.add-to-cart', function() {
+        const productId = parseInt($(this).data('id'));
+        addToCart(productId);
+    });
+
+    $('#cartBtn').click(function() {
+        renderCart();
+        new bootstrap.Modal($('#cartModal')).show();
+    });
+
+    $(document).on('click', '.increase-qty', function() {
+        updateQuantity(parseInt($(this).data('id')), 1);
+    });
+
+    $(document).on('click', '.decrease-qty', function() {
+        updateQuantity(parseInt($(this).data('id')), -1);
+    });
+
+    $(document).on('click', '.remove-item', function() {
+        updateQuantity(parseInt($(this).data('id')), -999);
+    });
+
+    $('#checkoutBtn').click(function() {
+        if (cart.length === 0) {
+            alert('장바구니가 비어있습니다.');
+            return;
+        }
+        alert('주문 페이지로 이동합니다. (실제로는 주문 폼으로 연결됩니다)');
+    });
+
+    // 초기화
+    renderProducts();
+    updateCartCount();
+});
+</script>
+</body>
+</html>

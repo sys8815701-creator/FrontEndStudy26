@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>드롭다운과 툴팁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>툴팁 예제</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <p>아래 버튼들에 마우스를 올려보세요!</p>
+
+            <!-- 기본 툴팁들 -->
+            <button type="button" class="btn btn-primary me-2"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="위쪽에 나타나는 툴팁">
+                위쪽 툴팁
+            </button>
+
+            <button type="button" class="btn btn-success me-2"
+                    data-bs-toggle="tooltip" data-bs-placement="right"
+                    title="오른쪽에 나타나는 툴팁">
+                오른쪽 툴팁
+            </button>
+
+            <button type="button" class="btn btn-warning me-2"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    title="아래쪽에 나타나는 툴팁">
+                아래쪽 툴팁
+            </button>
+
+            <button type="button" class="btn btn-danger me-2"
+                    data-bs-toggle="tooltip" data-bs-placement="left"
+                    title="왼쪽에 나타나는 툴팁">
+                왼쪽 툴팁
+            </button>
+        </div>
+    </div>
+
+    <!-- HTML 툴팁 -->
+    <div class="mt-4">
+        <h5>HTML 콘텐츠가 포함된 툴팁</h5>
+        <button type="button" class="btn btn-outline-primary"
+                data-bs-toggle="tooltip" data-bs-html="true"
+                title="<strong>굵은 글씨</strong>와 <em>기울임</em>이 포함된 툴팁">
+            HTML 툴팁
+        </button>
+    </div>
+</div>
+
+<script>
+// 툴팁 초기화 (필수!)
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
+</body>
+</html>

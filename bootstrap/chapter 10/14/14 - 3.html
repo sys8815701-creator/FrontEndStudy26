@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>멀티미디어 스트리밍 플레이어</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .video-container {
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #mainVideo {
+            width: 100%;
+            height: auto;
+        }
+
+        .playlist-item {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .playlist-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .playlist-item.active {
+            background-color: #e7f3ff;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .video-controls {
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px;
+        }
+
+        .progress-container {
+            height: 5px;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .progress-bar-custom {
+            height: 100%;
+            background: #0d6efd;
+            border-radius: 5px;
+            transition: width 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h2 class="mb-4">온라인 강의 플레이어</h2>
+
+        <div class="row">
+            <!-- 비디오 플레이어 영역 -->
+            <div class="col-lg-8 mb-4">
+                <div class="video-container">
+                    <video id="mainVideo" poster="thumbnail.jpg">
+                        <source src="" type="video/mp4">
+                        브라우저가 비디오 태그를 지원하지 않습니다.
+                    </video>
+
+                    <!-- 커스텀 컨트롤 -->
+                    <div class="video-controls">
+                        <div class="progress-container mb-3" id="progressContainer">
+                            <div class="progress-bar-custom" id="progressBar"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-light btn-sm" id="playPauseBtn">
+                                    <i class="bi bi-play-fill"></i>
+                                </button>
+                                <button class="btn btn-light btn-sm" id="stopBtn">
+                                    <i class="bi bi-stop-fill"></i>
+                                </button>
+                                <span class="text-white ms-2" id="timeDisplay">0:00 / 0:00</span>
+                            </div>
+
+                            <div class="d-flex gap-2 align-items-center">
+                                <select class="form-select form-select-sm" id="speedControl" style="width: 100px;">
+                                    <option value="0.5">0.5x</option>
+                                    <option value="1" selected>1.0x</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="2">2.0x</option>
+                                </select>
+
+                                <button class="btn btn-light btn-sm" id="muteBtn">
+                                    <i class="bi bi-volume-up-fill"></i>
+                                </button>
+
+                                <input type="range" class="form-range" id="volumeControl"
+                                       min="0" max="100" value="100" style="width: 100px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 비디오 정보 -->
+                <div class="mt-3">
+                    <h4 id="videoTitle">강의를 선택해주세요</h4>
+                    <p class="text-muted" id="videoDescription">재생 목록에서 강의를 선택하면 재생됩니다.</p>
+                </div>
+            </div>
+
+            <!-- 재생 목록 -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">강의 목록</h5>
+                    </div>
+                    <div class="list-group list-group-flush" id="playlist">
+                        <!-- jQuery로 동적 생성 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function() {
+    // 강의 데이터 (실제로는 서버에서 받아옴)
+    const videos = [
+        {
+            id: 1,
+            title: "Chapter 1. HTML 기초",
+            description: "웹 개발의 시작, HTML 태그를 배워봅시다",
+            url: "videos/lecture1.mp4",
+            duration: "15:30"
+        },
+        {
+            id: 2,
+            title: "Chapter 2. CSS 스타일링",
+            description: "아름다운 웹페이지를 만드는 CSS",
+            url: "videos/lecture2.mp4",
+            duration: "20:45"
+        },
+        {
+            id: 3,
+            title: "Chapter 3. JavaScript 입문",
+            description: "동적인 웹을 만드는 JavaScript",
+            url: "videos/lecture3.mp4",
+            duration: "25:10"
+        },
+        {
+            id: 4,
+            title: "Chapter 4. jQuery 활용",
+            description: "더 쉬운 JavaScript, jQuery",
+            url: "videos/lecture4.mp4",
+            duration: "18:20"
+        }
+    ];
+
+    let currentVideoIndex = 0;
+    const video = document.getElementById('mainVideo');
+
+    // 재생 목록 렌더링
+    function renderPlaylist() {
+        const playlistHTML = videos.map((v, index) => `
+            <a href="#" class="list-group-item list-group-item-action playlist-item ${index === currentVideoIndex ? 'active' : ''}"
+               data-index="${index}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${v.title}</h6>
+                        <small class="text-muted">${v.description}</small>
+                    </div>
+                    <span class="badge bg-secondary">${v.duration}</span>
+                </div>
+            </a>
+        `).join('');
+
+        $('#playlist').html(playlistHTML);
+    }
+
+    // 비디오 로드
+    function loadVideo(index) {
+        currentVideoIndex = index;
+        const videoData = videos[index];
+
+        video.src = videoData.url;
+        $('#videoTitle').text(videoData.title);
+        $('#videoDescription').text(videoData.description);
+
+        // 재생 목록 활성화 표시
+        $('.playlist-item').removeClass('active');
+        $(`.playlist-item[data-index="${index}"]`).addClass('active');
+
+        video.load();
+    }
+
+    // 재생 목록 클릭 이벤트
+    $(document).on('click', '.playlist-item', function(e) {
+        e.preventDefault();
+        const index = $(this).data('index');
+        loadVideo(index);
+        video.play();
+    });
+
+    // 초기 재생 목록 렌더링
+    renderPlaylist();
+});
+</script>
+<script>
+// 이전 코드에 이어서...
+
+    // 재생/일시정지 버튼
+    $('#playPauseBtn').on('click', function() {
+        if (video.paused) {
+            video.play();
+            $(this).html('<i class="bi bi-pause-fill"></i>');
+        } else {
+            video.pause();
+            $(this).html('<i class="bi bi-play-fill"></i>');
+        }
+    });
+
+    // 정지 버튼
+    $('#stopBtn').on('click', function() {
+        video.pause();
+        video.currentTime = 0;
+        $('#playPauseBtn').html('<i class="bi bi-play-fill"></i>');
+    });
+
+    // 재생 속도 조절
+    $('#speedControl').on('change', function() {
+        video.playbackRate = parseFloat($(this).val());
+    });
+
+    // 음소거 버튼
+    $('#muteBtn').on('click', function() {
+        video.muted = !video.muted;
+        if (video.muted) {
+            $(this).html('<i class="bi bi-volume-mute-fill"></i>');
+        } else {
+            $(this).html('<i class="bi bi-volume-up-fill"></i>');
+        }
+    });
+
+    // 볼륨 조절
+    $('#volumeControl').on('input', function() {
+        video.volume = $(this).val() / 100;
+    });
+
+    // 진행 바 업데이트
+    video.addEventListener('timeupdate', function() {
+        const percent = (video.currentTime / video.duration) * 100;
+        $('#progressBar').css('width', percent + '%');
+
+        // 시간 표시 업데이트
+        const currentTime = formatTime(video.currentTime);
+        const duration = formatTime(video.duration);
+        $('#timeDisplay').text(`${currentTime} / ${duration}`);
+    });
+
+    // 진행 바 클릭으로 이동
+    $('#progressContainer').on('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        video.currentTime = percent * video.duration;
+    });
+
+    // 비디오 종료 시 다음 영상 자동 재생
+    video.addEventListener('ended', function() {
+        if (currentVideoIndex < videos.length - 1) {
+            loadVideo(currentVideoIndex + 1);
+            video.play();
+        } else {
+            $('#playPauseBtn').html('<i class="bi bi-play-fill"></i>');
+        }
+    });
+
+    // 시간 포맷 함수
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // 키보드 단축키
+    $(document).on('keydown', function(e) {
+        // 스페이스바: 재생/일시정지
+        if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+            e.preventDefault();
+            $('#playPauseBtn').click();
+        }
+        // 화살표 좌: 5초 뒤로
+        else if (e.code === 'ArrowLeft') {
+            video.currentTime = Math.max(0, video.currentTime - 5);
+        }
+        // 화살표 우: 5초 앞으로
+        else if (e.code === 'ArrowRight') {
+            video.currentTime = Math.min(video.duration, video.currentTime + 5);
+        }
+    });
+</script>
+</body>
+</html>
